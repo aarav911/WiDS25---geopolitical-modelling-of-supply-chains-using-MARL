@@ -1,5 +1,3 @@
-# Omitted some parts from the code so it won't run till you fill them up
-
 import gymnasium as gym
 import numpy as np
 import matplotlib.pyplot as plt
@@ -19,14 +17,14 @@ n_actions = env.action_space.n
 # -----------------------------
 # Hyperparameters
 # -----------------------------
-# alpha = ?          # learning rate
-# gamma = ?         # discount factor
-# epsilon = ?        # initial exploration
-# epsilon_min = ?
-# epsilon_decay = ?
+alpha = 0.1            # learning rate
+gamma = 0.99           # discount factor
+epsilon = 1.0          # initial exploration
+epsilon_min = 0.01
+epsilon_decay = 0.995
 
-# num_episodes = ?
-# max_steps = ?
+num_episodes = 5000
+max_steps = 200
 
 # -----------------------------
 # Q-table initialization
@@ -49,15 +47,31 @@ for episode in range(num_episodes):
 
     for step in range(max_steps):
 
-        # Implement ε-greedy action selection
+        # ε-greedy action selection
+        if np.random.random() < epsilon:
+            action = env.action_space.sample()
+        else:
+            action = np.argmax(Q[state])
+
+        # Take action in environment
+        next_state, reward, done, truncated, _ = env.step(action)
 
         # Q-learning update
+        Q[state, action] += alpha * (
+            reward + gamma * np.max(Q[next_state]) - Q[state, action]
+        )
 
-    # Explore epsilon decay
+        state = next_state
+        total_reward += reward
 
+        if done or truncated:
+            break
 
-    # Track success rate 
+    # Epsilon decay
+    epsilon = max(epsilon_min, epsilon * epsilon_decay)
 
+    # Logging
+    episode_rewards.append(total_reward)
+    success_rate.append(1 if reward == 1 else 0)
 
 env.close()
-
