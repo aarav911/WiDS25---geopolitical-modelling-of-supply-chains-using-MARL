@@ -156,20 +156,6 @@ Includes:
 - Policy divergence analysis
 - Statistical summaries
 
----
-
-# Repository Structure
-
-.
-├── train_q_learning.py
-├── train_sarsa.py
-├── evaluation.py
-├── visualization.py
-├── learning_curves.png
-├── policies.png
-├── final_comparison.png
-├── README.md
-└── report.pdf
 
 ---
 
